@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dice Roller</title>
+  <style>
+    img {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+    }
+    table {
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div id="result"></div>
+<button id="rollButton">Roll Dice</button>
+
+<script>
+function start() {
+  var button = document.getElementById("rollButton");
+  button.addEventListener("click", rollDice, false);
+}
+
+function rollDice() {
+  var resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  var frequencyTable = [0, 0, 0, 0, 0, 0];
+
+  for (var i = 0; i < 2; i++) {
+    for (var j = 0; j < 6; j++) {
+      var dieNumber = i * 6 + j + 1;
+      var face = Math.floor(Math.random() * 6) + 1;
+      setImage(dieNumber, face);
+      frequencyTable[face - 1]++;
+    }
+    resultDiv.innerHTML += "<br>";
+  }
+
+  var probabilities = calculateProbabilities(frequencyTable);
+
+  // Create a vertical table for displaying probabilities
+  var table = "<table>";
+  for (var i = 0; i < probabilities.length; i++) {
+    table += `<tr><th>Face ${i + 1}</th><td>${(probabilities[i] * 2).toFixed(2)}%</td></tr>`;
+  }
+  table += "</table>";
+  resultDiv.innerHTML += table;
+}
+
+function setImage(dieNumber, face) {
+  var resultDiv = document.getElementById("result");
+
+  var imagePath = "die" + face + ".png";
+
+  var imgElement = document.createElement("img");
+  imgElement.src = imagePath;
+  imgElement.alt = "Die " + face;
+  resultDiv.appendChild(imgElement);
+}
+
+function calculateProbabilities(frequencyTable) {
+  var totalRolls = 12 * 2;
+  return frequencyTable.map(count => (count / totalRolls) * 100);
+}
+
+window.addEventListener("load", start, false);
+</script>
+
+</body>
+</html>
